@@ -1,4 +1,5 @@
 import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
+import Link from 'next/link';
 
 export default function Navbar() {
   return (
@@ -32,7 +33,8 @@ export default function Navbar() {
 
         {/* Cart Icon with red dot */}
         <div className="relative">
-          <FaShoppingCart className="text-xl cursor-pointer" />
+          <Link href="/main/cart">
+          <FaShoppingCart className="text-xl cursor-pointer" /></Link>
           <span className="text-xl cursor-pointer" />
         </div>
 

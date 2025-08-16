@@ -56,7 +56,10 @@ export default function HomePage() {
         <CategoryList />
 
         {/* Product Cards */}
-        {active === "cards" && <ProductsCards products={products} />}
+       <div className="w-3/4 mx-auto">
+  {active === "cards" && <ProductsCards products={products} />}
+</div>
+
       </main>
     </div>
   );
