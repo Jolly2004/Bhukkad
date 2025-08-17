@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../../api/CartContext/CartContext";
 import Navbar from "../../components/navbar/navbar/page";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,18 @@ export default function CartPage() {
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [error, setError] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
+
+  // Detect user login status
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   // Total without discount
   const subtotal = cart.reduce(
@@ -34,11 +45,10 @@ export default function CartPage() {
 
   // Handle checkout
   const handleCheckout = () => {
-    const isLoggedIn = false; // <-- Replace with real auth check
     if (!isLoggedIn) {
-      router.push("/login");
+      router.push("/main/login"); // Redirect if not logged in
     } else {
-      router.push("/checkout");
+      router.push("/main/checkout"); // Proceed if logged in
     }
   };
 
@@ -102,7 +112,7 @@ export default function CartPage() {
 
             {/* Coupon + Total Section */}
             <div className="mt-6 flex flex-col md:flex-row gap-4">
-              {/* Coupon Code Section - 50% */}
+              {/* Coupon Code Section */}
               <div className="md:w-1/2 w-full p-4 bg-gray-50 rounded-lg shadow">
                 <h2 className="text-lg font-semibold mb-2">Apply Coupon</h2>
                 <div className="flex flex-col sm:flex-row gap-2">
@@ -125,7 +135,7 @@ export default function CartPage() {
                 )}
               </div>
 
-              {/* Cart total - 50% */}
+              {/* Cart total */}
               <div className="md:w-1/2 w-full p-4 bg-gray-100 rounded-lg shadow">
                 <h2 className="text-xl font-semibold">Subtotal: ₹{subtotal}</h2>
                 {discount > 0 && (

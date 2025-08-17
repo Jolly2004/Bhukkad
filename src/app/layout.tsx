@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "My Shop",
+  title: "BHUKKAD",
   description: "Next.js + React + MySQL Store",
 };
 
