@@ -49,7 +49,7 @@ export default function Navbar() {
       {/* Icons / User Info */}
       <div className="flex items-center space-x-4 text-gray-700">
         {/* Search */}
-        <FaSearch className="text-xl cursor-pointer" />
+        
 
         {/* Cart */}
         <div className="relative">
