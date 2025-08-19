@@ -11,7 +11,11 @@ export async function POST(req: Request) {
       host: "localhost",   // change if remote
       user: "root",        // your mysql username
       password: "", // your mysql password
-      database: "food",    // your database
+      database: "food", 
+        port: Number(process.env.DB_PORT),
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,   // your database
     });
 
     // insert user
