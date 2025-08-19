@@ -6,7 +6,11 @@ const pool = mysql.createPool({
   host: "localhost",
   user: "root",          // your MySQL username
   password: "",          // your MySQL password
-  database: "food",      // your DB name
+  database: "food",  
+    port: Number(process.env.DB_PORT),
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,    // your DB name
 });
 
 export async function POST(req: Request) {
