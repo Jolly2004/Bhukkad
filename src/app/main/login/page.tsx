@@ -10,46 +10,53 @@ const LoginForm: React.FC = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-const [loading, setLoading] = useState(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setError("");
-
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      router.push("/main/cart");
-    } else {
-      setError(data.message || "Login failed");
+    // ✅ Check for admin credentials first
+    if (form.email === "admin@123" && form.password === "123") {
+      localStorage.setItem("user", JSON.stringify({ role: "admin" }));
+      router.push("/admin");
+      setLoading(false);
+      return;
     }
-  } catch (err){
-    console.error("Login error:", err);
-    setError("Something went wrong. Try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+
+    // ✅ Normal user login flow
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        router.push("/main/cart");
+      } else {
+        setError(data.message || "Login failed");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleClose = () => {
     router.push("/");
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 relative">
@@ -88,15 +95,14 @@ const handleSubmit = async (e: React.FormEvent) => {
           {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
           <button
-  type="submit"
-  disabled={loading}
-  className={`w-full bg-orange-500 text-white py-2 rounded-lg shadow-md transition font-medium ${
-    loading ? "opacity-70 cursor-not-allowed" : "hover:bg-orange-600"
-  }`}
->
-  {loading ? "Logging in..." : "Login"}
-</button>
-
+            type="submit"
+            disabled={loading}
+            className={`w-full bg-orange-500 text-white py-2 rounded-lg shadow-md transition font-medium ${
+              loading ? "opacity-70 cursor-not-allowed" : "hover:bg-orange-600"
+            }`}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </form>
 
         {/* Checkbox */}
