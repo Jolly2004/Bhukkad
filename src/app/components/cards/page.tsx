@@ -1,15 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-interface Food {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  type: "veg" | "nonveg";
-  photo: string;
-}
+import { db, Food } from "../../../db/cartDB"; // adjust path
 
 export default function FoodsPage() {
   const [foods, setFoods] = useState<Food[]>([]);
@@ -28,11 +20,20 @@ export default function FoodsPage() {
     }
   };
 
-  // ✅ Add to Cart (stores in localStorage)
-  const addToCart = (food: Food) => {
-    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const updatedCart = [...existingCart, food];
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  // ✅ Add to Cart (stores in IndexedDB instead of localStorage)
+  const addToCart = async (food: Food) => {
+    const existing = await db.cart.get(food._id);
+
+    if (existing) {
+      // If already in cart → update quantity
+      await db.cart.update(food._id, {
+        quantity: (existing.quantity || 1) + 1,
+      });
+    } else {
+      // Otherwise → add new item with quantity 1
+      await db.cart.add({ ...food, quantity: 1 });
+    }
+
     alert(`${food.name} added to cart ✅`);
   };
 

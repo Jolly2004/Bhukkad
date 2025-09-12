@@ -73,7 +73,7 @@ function HeaderBar() {
         }}
       >
         <a
-          href="/cart"
+          href="/pages/cart"
           style={{
             color: "#F25C23",
             fontWeight: 600,
