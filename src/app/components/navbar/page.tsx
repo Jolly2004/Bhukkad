@@ -9,21 +9,25 @@ function HeaderBar() {
         padding: "12px 32px",
         background: "#fff",
         borderBottom: "1px solid #eee",
+        position: "relative",
       }}
     >
-      {/* Logo */}
+      {/* Left spacer to center logo */}
+      <div style={{ flex: 1 }}></div>
+
+      {/* Logo centered */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
-          marginRight: "24px",
+          justifyContent: "center",
         }}
       >
         <span
           style={{
             color: "#F25C23",
             fontSize: "30px",
-            marginRight: "8px",
+            marginRight: "6px",
           }}
         >
           {/* Chef hat SVG */}
@@ -34,78 +38,47 @@ function HeaderBar() {
             />
           </svg>
         </span>
-        <span style={{ fontWeight: 700, fontSize: "1.5rem" }}>BiteDash</span>
+        <a href="/"> <span style={{  marginRight: "550px",fontWeight: 700, fontSize: "1.5rem" }}>BiteDash</span></a>
       </div>
 
-      {/* Search Box */}
-      <form
-        style={{
-          display: "flex",
-          flex: 1,
-          maxWidth: 520,
-        }}
-      >
-        <input
-          type="search"
-          placeholder="Search restaurants or dishes"
-          style={{
-            flex: 1,
-            padding: "10px 16px",
-            border: "1px solid #E8E8EA",
-            borderRadius: "8px 0 0 8px",
-            fontSize: "1rem",
-            outline: "none",
-          }}
-        />
-        <button
-          type="submit"
-          style={{
-            background: "#F25C23",
-            color: "#fff",
-            fontWeight: 700,
-            border: "none",
-            borderRadius: "0 8px 8px 0",
-            padding: "0 24px",
-            cursor: "pointer",
-          }}
-        >
-          Search
-        </button>
-      </form>
-
-      {/* Navigation Links */}
+      {/* Right links */}
       <nav
         style={{
           display: "flex",
           alignItems: "center",
-          marginLeft: "32px",
           gap: "24px",
           fontSize: "1rem",
+          marginLeft: "auto",
         }}
       >
         <a
-          href="#"
+          href="/cart"
           style={{
             color: "#F25C23",
             fontWeight: 600,
             textDecoration: "none",
           }}
         >
-          Menu
+          Cart
         </a>
-        <a href="#" style={{ color: "#333", textDecoration: "none" }}>
-          Orders
+        <a
+          href="/signup"
+          style={{
+            color: "#333",
+            textDecoration: "none",
+          }}
+        >
+          Sign In
         </a>
-        <a href="#" style={{ color: "#333", textDecoration: "none" }}>
-          Profile
+        <a
+          href="/login"
+          style={{
+            color: "#333",
+            textDecoration: "none",
+          }}
+        >
+          Log In
         </a>
-
-        {/* Icon buttons */}
-       
-
-        
-
-       
       </nav>
     </header>
   );

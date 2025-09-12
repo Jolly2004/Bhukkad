@@ -1,19 +1,19 @@
-import Image from "next/image";
+"use client";
+
+import FoodsPage from"../app/components/cards/page";  // ✅ adjust the path if your FoodsPage is in app/foods/page.tsx
 import HeroSection from "./components/hero/page";
-import OffersSection from "./components/offersection/page";
 import HeaderBar from "./components/navbar/page";
+import OffersSection from "./components/offersection/page";
 
 export default function Home() {
   return (
-   <div>
-    <main>
+    <div>
         <HeaderBar/>
-      </main>
-    <HeroSection/>
     <main>
-      <OffersSection/>
-      
+       <HeroSection/>
+       <OffersSection/>
+             <FoodsPage />
     </main>
-   </div>
+    </div>
   );
 }
