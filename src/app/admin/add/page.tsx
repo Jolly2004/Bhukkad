@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import AdminNavbar from "../components/navbar/page";
 
 interface FoodData {
@@ -12,6 +13,8 @@ interface FoodData {
 }
 
 export default function AddFoodPage() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState<FoodData>({
     name: "",
     description: "",
@@ -24,21 +27,35 @@ export default function AddFoodPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Handle input fields (text, textarea, select)
+  // ✅ Authentication Guard
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      alert("⚠️ You must be logged in to access this page");
+      router.push("/pages/login"); // redirect to login
+    } else {
+      const parsedUser = JSON.parse(user);
+      // Optional: check if the user is admin
+      if (parsedUser.username !== "admin") {
+        alert("⚠️ You do not have permission to access this page");
+        router.push("/"); // redirect to homepage
+      }
+    }
+  }, [router]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle file input
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
         setFilePreview(reader.result as string);
-        setFormData({ ...formData, photo: reader.result as string }); // base64 string
+        setFormData({ ...formData, photo: reader.result as string });
       };
       reader.readAsDataURL(file);
     }
@@ -59,7 +76,6 @@ export default function AddFoodPage() {
       const data = await res.json();
       setMessage(data.message || "✅ Food added successfully");
 
-      // Reset form
       setFormData({ name: "", description: "", price: "", type: "veg", photo: null });
       setFilePreview(null);
     } catch (error) {
@@ -71,112 +87,109 @@ export default function AddFoodPage() {
 
   return (
     <div>
-        <main><AdminNavbar/></main>
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-bold text-[#F25C23] mb-6">➕ Add New Food Item</h2>
+      <main>
+        <AdminNavbar />
+      </main>
 
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        {/* Name */}
-        <div>
-          <label className="font-semibold mb-1 block">Item Name</label>
-          <input
-            type="text"
-            name="name"
-            placeholder="e.g. Margherita Pizza"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
-            required
-          />
-        </div>
+      <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
+        <h2 className="text-2xl font-bold text-[#F25C23] mb-6">➕ Add New Food Item</h2>
 
-        {/* File Upload */}
-        <div>
-          <label className="font-semibold mb-1 block">Food Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="block w-full text-sm text-gray-600"
-          />
-          {filePreview && (
-            <div className="mt-3">
-              <img
-                src={filePreview}
-                alt="Preview"
-                className="w-48 h-32 object-cover rounded-lg shadow-md"
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="font-semibold mb-1 block">Description</label>
-          <textarea
-            name="description"
-            placeholder="Short description"
-            value={formData.description}
-            onChange={handleChange}
-            rows={4}
-            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
-            required
-          />
-        </div>
-
-        {/* Price */}
-        <div>
-          <label className="font-semibold mb-1 block">Price (₹)</label>
-          <input
-            type="number"
-            name="price"
-            placeholder="100"
-            value={formData.price}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
-            required
-          />
-        </div>
-
-        {/* Type */}
-        <div>
-          <label className="font-semibold mb-1 block">Type</label>
-          <div className="flex gap-6">
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="type"
-                value="veg"
-                checked={formData.type === "veg"}
-                onChange={handleChange}
-              />
-              Veg
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="type"
-                value="nonveg"
-                checked={formData.type === "nonveg"}
-                onChange={handleChange}
-              />
-              Non-Veg
-            </label>
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+          <div>
+            <label className="font-semibold mb-1 block">Item Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="e.g. Margherita Pizza"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
+              required
+            />
           </div>
-        </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-[#F25C23] text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition"
-        >
-          {loading ? "Adding..." : "Add Food Item"}
-        </button>
-      </form>
+          <div>
+            <label className="font-semibold mb-1 block">Food Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-600"
+            />
+            {filePreview && (
+              <div className="mt-3">
+                <img
+                  src={filePreview}
+                  alt="Preview"
+                  className="w-48 h-32 object-cover rounded-lg shadow-md"
+                />
+              </div>
+            )}
+          </div>
 
-      {message && <p className="mt-4 text-center text-sm">{message}</p>}
-    </div>
+          <div>
+            <label className="font-semibold mb-1 block">Description</label>
+            <textarea
+              name="description"
+              placeholder="Short description"
+              value={formData.description}
+              onChange={handleChange}
+              rows={4}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="font-semibold mb-1 block">Price (₹)</label>
+            <input
+              type="number"
+              name="price"
+              placeholder="100"
+              value={formData.price}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="font-semibold mb-1 block">Type</label>
+            <div className="flex gap-6">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="type"
+                  value="veg"
+                  checked={formData.type === "veg"}
+                  onChange={handleChange}
+                />
+                Veg
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="type"
+                  value="nonveg"
+                  checked={formData.type === "nonveg"}
+                  onChange={handleChange}
+                />
+                Non-Veg
+              </label>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-[#F25C23] text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition"
+          >
+            {loading ? "Adding..." : "Add Food Item"}
+          </button>
+        </form>
+
+        {message && <p className="mt-4 text-center text-sm">{message}</p>}
+      </div>
     </div>
   );
 }
