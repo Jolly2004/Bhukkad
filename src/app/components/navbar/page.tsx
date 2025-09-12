@@ -1,6 +1,25 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 
 function HeaderBar() {
+  const [user, setUser] = useState<{ name: string } | null>(null);
+
+  // Check if user info is stored in localStorage (after login)
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    // Optional: redirect to home
+    window.location.href = "/";
+  };
+
   return (
     <header
       style={{
@@ -12,7 +31,6 @@ function HeaderBar() {
         position: "relative",
       }}
     >
-      {/* Left spacer to center logo */}
       <div style={{ flex: 1 }}></div>
 
       {/* Logo centered */}
@@ -30,7 +48,6 @@ function HeaderBar() {
             marginRight: "6px",
           }}
         >
-          {/* Chef hat SVG */}
           <svg height="30" width="30" viewBox="0 0 24 24">
             <path
               fill="#F25C23"
@@ -38,7 +55,11 @@ function HeaderBar() {
             />
           </svg>
         </span>
-        <a href="/"> <span style={{  marginRight: "550px",fontWeight: 700, fontSize: "1.5rem" }}>BiteDash</span></a>
+        <a href="/">
+          <span style={{ marginRight: "550px", fontWeight: 700, fontSize: "1.5rem" }}>
+            BiteDash
+          </span>
+        </a>
       </div>
 
       {/* Right links */}
@@ -61,24 +82,46 @@ function HeaderBar() {
         >
           Cart
         </a>
-        <a
-          href="/signup"
-          style={{
-            color: "#333",
-            textDecoration: "none",
-          }}
-        >
-          Sign In
-        </a>
-        <a
-          href="/login"
-          style={{
-            color: "#333",
-            textDecoration: "none",
-          }}
-        >
-          Log In
-        </a>
+
+        {user ? (
+          <>
+            <span style={{ fontWeight: 600, color: "#333" }}>Hello, {user.name}</span>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: "#F25C23",
+                color: "#fff",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <a
+              href="/pages/signup"
+              style={{
+                color: "#333",
+                textDecoration: "none",
+              }}
+            >
+              Sign Up
+            </a>
+            <a
+              href="/pages/login"
+              style={{
+                color: "#333",
+                textDecoration: "none",
+              }}
+            >
+              Log In
+            </a>
+          </>
+        )}
       </nav>
     </header>
   );
