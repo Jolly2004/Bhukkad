@@ -69,7 +69,7 @@ export default function CartPage() {
     0
   );
 
-  // ✅ Razorpay Checkout
+  // ✅ Razorpay Checkout + Save Order
   const openRazorpay = () => {
     if (cartItems.length === 0) {
       alert("Cart is empty!");
@@ -77,20 +77,39 @@ export default function CartPage() {
     }
 
     const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY, // your key
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
       amount: totalAmount * 100, // in paise
       currency: "INR",
       name: "Food Order",
       description: "Payment for your food order",
       handler: async function (response: any) {
-        alert("✅ Payment successful! Payment ID: " + response.razorpay_payment_id);
-        await db.cart.clear();
-        router.push("/"); // redirect after success
+        try {
+          // Save order to MongoDB
+          const orderData = {
+            user: localStorage.getItem("user") || "",
+            items: cartItems,
+            deliveryAddress: deliveryInstructions,
+            paymentType: "Razorpay",
+            totalAmount,
+            razorpayPaymentId: response.razorpay_payment_id,
+          };
+
+          await fetch("/api/order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData),
+          });
+
+          alert("✅ Payment successful! Order saved.");
+          await db.cart.clear();
+          router.push("/"); // redirect after success
+        } catch (err: any) {
+          console.error(err);
+          alert("❌ Payment succeeded but order could not be saved.");
+        }
       },
-      prefill: {
-        name: localStorage.getItem("user") || "",
-      },
-      theme: { color: "#F97316" }, // orange
+      prefill: { name: localStorage.getItem("user") || "" },
+      theme: { color: "#F97316" },
     };
 
     const rzp = new window.Razorpay(options);
@@ -100,8 +119,12 @@ export default function CartPage() {
   // ✅ Handle delivery form submission + open Razorpay
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!deliveryInstructions.trim()) {
+      alert("Please enter a delivery address.");
+      return;
+    }
     localStorage.setItem("deliveryInstructions", deliveryInstructions);
-    openRazorpay(); // immediately open payment
+    openRazorpay();
   };
 
   if (loading) return <p className="p-6">Loading...</p>;

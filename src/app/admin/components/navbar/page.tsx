@@ -31,7 +31,7 @@ export default function AdminNavbar() {
               List of Items
             </Link>
             <Link
-              href="/admin/orders"
+              href="/admin/order"
               className="hover:bg-orange-600 px-3 py-2 rounded-lg font-semibold"
             >
               Orders
@@ -65,7 +65,7 @@ export default function AdminNavbar() {
             List of Items
           </Link>
           <Link
-            href="/admin/orders"
+            href="/admin/order"
             className="block bg-orange-500 px-3 py-2 rounded-lg font-semibold"
             onClick={() => setOpen(false)}
           >
