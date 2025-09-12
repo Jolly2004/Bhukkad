@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 function HeaderBar() {
   const [user, setUser] = useState<{ name: string } | null>(null);
@@ -55,11 +56,11 @@ function HeaderBar() {
             />
           </svg>
         </span>
-        <a href="/">
+        <Link href="/">
           <span style={{ marginRight: "550px", fontWeight: 700, fontSize: "1.5rem" }}>
             BiteDash
           </span>
-        </a>
+        </Link>
       </div>
 
       {/* Right links */}
@@ -72,7 +73,7 @@ function HeaderBar() {
           marginLeft: "auto",
         }}
       >
-        <a
+        <Link
           href="/pages/cart"
           style={{
             color: "#F25C23",
@@ -81,7 +82,7 @@ function HeaderBar() {
           }}
         >
           Cart
-        </a>
+        </Link>
 
         {user ? (
           <>
@@ -102,7 +103,7 @@ function HeaderBar() {
           </>
         ) : (
           <>
-            <a
+            <Link
               href="/pages/signup"
               style={{
                 color: "#333",
@@ -110,8 +111,8 @@ function HeaderBar() {
               }}
             >
               Sign Up
-            </a>
-            <a
+            </Link>
+            <Link
               href="/pages/login"
               style={{
                 color: "#333",
@@ -119,7 +120,7 @@ function HeaderBar() {
               }}
             >
               Log In
-            </a>
+            </Link>
           </>
         )}
       </nav>

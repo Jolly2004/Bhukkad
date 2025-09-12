@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminNavbar from "../components/navbar/page";
+import Image from "next/image";
 
 interface FoodData {
   name: string;
@@ -78,7 +79,7 @@ export default function AddFoodPage() {
 
       setFormData({ name: "", description: "", price: "", type: "veg", photo: null });
       setFilePreview(null);
-    } catch (error) {
+    } catch{
       setMessage("❌ Error adding food");
     } finally {
       setLoading(false);
@@ -118,11 +119,10 @@ export default function AddFoodPage() {
             />
             {filePreview && (
               <div className="mt-3">
-                <img
+                <Image
                   src={filePreview}
                   alt="Preview"
-                  className="w-48 h-32 object-cover rounded-lg shadow-md"
-                />
+                  className="w-48 h-32 object-cover rounded-lg shadow-md" />
               </div>
             )}
           </div>
