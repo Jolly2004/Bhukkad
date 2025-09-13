@@ -30,83 +30,109 @@ export default function SignUpForm() {
     }
 
     try {
-      const response = await axios.post("/api/signup", { name, email, address, password });
+      const response = await axios.post("/api/signup", {
+        name,
+        email,
+        address,
+        password,
+      });
       if (response.data.success) {
         setSuccess(response.data.message);
-        setName(""); setEmail(""); setAddress(""); setPassword("");
+        setName("");
+        setEmail("");
+        setAddress("");
+        setPassword("");
       } else {
         setError(response.data.message);
       }
-    } catch (err) {
+    } catch {
       setError("Something went wrong!");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-red-600 mb-6">Sign Up</h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {success && <p className="text-green-500 mb-4">{success}</p>}
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
+      <div className="w-full max-w-sm p-6 sm:p-8 bg-gray-800 rounded-xl shadow-lg">
+        <h2 className="text-2xl font-bold text-center text-red-500 mb-6">
+          Sign Up
+        </h2>
+
+        {error && <p className="text-red-400 mb-4 text-center">{error}</p>}
+        {success && <p className="text-green-400 mb-4 text-center">{success}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700">Name</label>
+            <label className="block text-gray-300">Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Enter your name"
             />
           </div>
+
           <div>
-            <label className="block text-gray-700">Email</label>
+            <label className="block text-gray-300">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Enter your email"
             />
           </div>
+
           <div>
-            <label className="block text-gray-700">Address</label>
+            <label className="block text-gray-300">Address</label>
             <input
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Enter your address"
             />
           </div>
+
           <div>
-            <label className="block text-gray-700">Password</label>
+            <label className="block text-gray-300">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Enter your password"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               Must be 8+ chars, include uppercase, lowercase, number & special char
             </p>
           </div>
+
           <button
             type="submit"
             className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
           >
             Sign Up
           </button>
+
           <button
-            type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
+            type="button"
+            onClick={() => (window.location.href = "/")}
+            className="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition"
           >
-            <a href="/">Back to homepage</a>
+            Back to Homepage
           </button>
         </form>
-        <p className="text-sm text-center text-gray-500 mt-4">
-          Already have an account? <a href="/pages/login" className="text-red-600">Sign In</a>
+
+        <p className="text-sm text-center text-gray-400 mt-4">
+          Already have an account?{" "}
+          <a href="/pages/login" className="text-red-400 hover:underline">
+            Sign In
+          </a>
         </p>
       </div>
     </div>
