@@ -7,7 +7,6 @@ export default function FoodsPage() {
   const [foods, setFoods] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch all foods
   const fetchFoods = async () => {
     try {
       const res = await fetch("/api/food/add", { method: "GET" });
@@ -20,17 +19,14 @@ export default function FoodsPage() {
     }
   };
 
-  // ✅ Add to Cart (stores in IndexedDB instead of localStorage)
   const addToCart = async (food: Food) => {
     const existing = await db.cart.get(food._id);
 
     if (existing) {
-      // If already in cart → update quantity
       await db.cart.update(food._id, {
         quantity: (existing.quantity || 1) + 1,
       });
     } else {
-      // Otherwise → add new item with quantity 1
       await db.cart.add({ ...food, quantity: 1 });
     }
 
@@ -42,14 +38,14 @@ export default function FoodsPage() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-white min-h-screen font-sans text-black"> {/* ✅ Force black text & font */}
       <div className="p-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6">🍴 All Foods</h2>
+        <h2 className="text-3xl font-bold mb-6 font-serif">🍴 All Foods</h2> {/* ✅ New font for heading */}
 
         {loading ? (
-          <p>Loading...</p>
+          <p className="text-black">Loading...</p>
         ) : foods.length === 0 ? (
-          <p>No food items found</p>
+          <p className="text-black">No food items found</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {foods.map((food) => (
@@ -62,13 +58,15 @@ export default function FoodsPage() {
                   alt={food.name}
                   className="w-full h-40 object-cover rounded-lg"
                 />
-                <h3 className="text-lg font-semibold mt-3">{food.name}</h3>
-                <p className="text-gray-600 text-sm line-clamp-2">
+                <h3 className="text-lg font-semibold mt-3 font-mono text-black">
+                  {food.name}
+                </h3>
+                <p className="text-gray-700 text-sm line-clamp-2 font-sans">
                   {food.description}
                 </p>
-                <p className="text-gray-800 font-bold mt-2">₹{food.price}</p>
+                <p className="text-gray-900 font-bold mt-2 font-sans">₹{food.price}</p>
                 <span
-                  className={`text-xs px-2 py-1 rounded-full mt-2 w-fit ${
+                  className={`text-xs px-2 py-1 rounded-full mt-2 w-fit font-sans ${
                     food.type === "veg"
                       ? "bg-green-100 text-green-600"
                       : "bg-red-100 text-red-600"
@@ -76,11 +74,9 @@ export default function FoodsPage() {
                 >
                   {food.type.toUpperCase()}
                 </span>
-
-                {/* ✅ Add to Cart Button */}
                 <button
                   onClick={() => addToCart(food)}
-                  className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition"
+                  className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition font-sans"
                 >
                   Add to Cart
                 </button>

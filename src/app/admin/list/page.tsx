@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminNavbar from "../components/navbar/page";
 import Image from "next/image";
+
 interface Food {
   _id: string;
   name: string;
@@ -16,7 +17,7 @@ export default function FoodsPage() {
   const [foods, setFoods] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch all foods
+  // Fetch all foods
   const fetchFoods = async () => {
     try {
       const res = await fetch("/api/food/add", { method: "GET" });
@@ -29,7 +30,7 @@ export default function FoodsPage() {
     }
   };
 
-  // ✅ Delete a food
+  // Delete a food
   const deleteFood = async (id: string) => {
     try {
       const res = await fetch("/api/food/add", {
@@ -50,51 +51,50 @@ export default function FoodsPage() {
   }, []);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <AdminNavbar />
-      <div className="p-6 max-w-5xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6">🍴 All Foods</h2>
+      <div className="p-6 max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">🍴 All Foods</h2>
 
         {loading ? (
-          <p>Loading...</p>
+          <p className="text-gray-600">Loading...</p>
         ) : foods.length === 0 ? (
-          <p>No food items found</p>
+          <p className="text-gray-600">No food items found</p>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {foods.map((food) => (
               <div
                 key={food._id}
-                className="flex items-center justify-between bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition"
+                className="flex flex-col md:flex-row items-start md:items-center bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition"
               >
-                {/* Left: Image */}
+                {/* Image */}
                 <Image
                   src={food.photo || "/placeholder-food.jpg"}
                   alt={food.name}
-                  className="w-28 h-20 object-cover rounded-lg"
-
+                  width={120}
+                  height={80}
+                  className="object-cover rounded-lg"
                 />
 
-                {/* Middle: Info */}
-                <div className="flex-1 ml-4">
-                  <h3 className="text-lg font-semibold">{food.name}</h3>
-                  <p className="text-gray-600 text-sm truncate w-[400px]">
-                    {food.description}
-                  </p>
+                {/* Info */}
+                <div className="flex-1 md:ml-4 mt-3 md:mt-0">
+                  <h3 className="text-lg font-semibold text-gray-800">{food.name}</h3>
+                  <p className="text-gray-600 text-sm truncate md:w-[350px]">{food.description}</p>
                   <p className="text-gray-800 font-bold mt-1">₹{food.price}</p>
                   <span
-                    className={`text-xs px-2 py-1 rounded-full ${food.type === "veg"
-                        ? "bg-green-100 text-green-600"
-                        : "bg-red-100 text-red-600"
-                      }`}
+                    className={`text-xs px-2 py-1 rounded-full mt-1 inline-block ${food.type === "veg"
+                      ? "bg-green-100 text-green-600"
+                      : "bg-red-100 text-red-600"
+                    }`}
                   >
                     {food.type.toUpperCase()}
                   </span>
                 </div>
 
-                {/* Right: Actions */}
+                {/* Actions */}
                 <button
                   onClick={() => deleteFood(food._id)}
-                  className="ml-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                  className="mt-3 md:mt-0 md:ml-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
                 >
                   Delete
                 </button>

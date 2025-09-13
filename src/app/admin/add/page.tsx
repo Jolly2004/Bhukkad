@@ -33,13 +33,12 @@ export default function AddFoodPage() {
     const user = localStorage.getItem("user");
     if (!user) {
       alert("⚠️ You must be logged in to access this page");
-      router.push("/pages/login"); // redirect to login
+      router.push("/pages/login");
     } else {
       const parsedUser = JSON.parse(user);
-      // Optional: check if the user is admin
       if (parsedUser.username !== "admin") {
         alert("⚠️ You do not have permission to access this page");
-        router.push("/"); // redirect to homepage
+        router.push("/");
       }
     }
   }, [router]);
@@ -50,13 +49,45 @@ export default function AddFoodPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ Handle image upload + resize + compress
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setFilePreview(reader.result as string);
-        setFormData({ ...formData, photo: reader.result as string });
+        const img: HTMLImageElement = new window.Image();
+        img.src = reader.result as string;
+
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const maxWidth = 800;
+          const maxHeight = 600;
+          let width = img.width;
+          let height = img.height;
+
+          // Maintain aspect ratio
+          if (width > height) {
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width *= maxHeight / height;
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+
+          setFilePreview(compressedDataUrl);
+          setFormData((prev: FoodData) => ({ ...prev, photo: compressedDataUrl }));
+        };
       };
       reader.readAsDataURL(file);
     }
@@ -77,9 +108,10 @@ export default function AddFoodPage() {
       const data = await res.json();
       setMessage(data.message || "✅ Food added successfully");
 
+      // Reset form
       setFormData({ name: "", description: "", price: "", type: "veg", photo: null });
       setFilePreview(null);
-    } catch{
+    } catch {
       setMessage("❌ Error adding food");
     } finally {
       setLoading(false);
@@ -87,15 +119,14 @@ export default function AddFoodPage() {
   };
 
   return (
-    <div>
-      <main>
-        <AdminNavbar />
-      </main>
+    <div className="bg-gray-50 min-h-screen">
+      <AdminNavbar />
 
       <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
         <h2 className="text-2xl font-bold text-[#F25C23] mb-6">➕ Add New Food Item</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+          {/* Item Name */}
           <div>
             <label className="font-semibold mb-1 block">Item Name</label>
             <input
@@ -109,6 +140,7 @@ export default function AddFoodPage() {
             />
           </div>
 
+          {/* Food Image */}
           <div>
             <label className="font-semibold mb-1 block">Food Image</label>
             <input
@@ -120,13 +152,18 @@ export default function AddFoodPage() {
             {filePreview && (
               <div className="mt-3">
                 <Image
-                  src={filePreview}
+                  src={filePreview as string}
                   alt="Preview"
-                  className="w-48 h-32 object-cover rounded-lg shadow-md" />
+                  width={320}
+                  height={240}
+                  className="object-cover rounded-lg shadow-md"
+                  unoptimized
+                />
               </div>
             )}
           </div>
 
+          {/* Description */}
           <div>
             <label className="font-semibold mb-1 block">Description</label>
             <textarea
@@ -140,6 +177,7 @@ export default function AddFoodPage() {
             />
           </div>
 
+          {/* Price */}
           <div>
             <label className="font-semibold mb-1 block">Price (₹)</label>
             <input
@@ -153,6 +191,7 @@ export default function AddFoodPage() {
             />
           </div>
 
+          {/* Type */}
           <div>
             <label className="font-semibold mb-1 block">Type</label>
             <div className="flex gap-6">
@@ -179,6 +218,7 @@ export default function AddFoodPage() {
             </div>
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}

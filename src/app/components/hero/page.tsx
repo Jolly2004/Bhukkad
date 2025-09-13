@@ -59,10 +59,13 @@ export default function HeroSection() {
           alt="Food"
           className="rounded-2xl shadow-lg w-[500px] object-cover"
         />
-        <div className="absolute bottom-4 left-4 bg-white shadow-md px-4 py-2 rounded-lg text-sm font-medium">
-          30min avg delivery <br />
-          <span className="text-gray-500 text-xs">Across 2k+ restaurants</span>
-        </div>
+        <div className="absolute bottom-4 left-4 bg-white shadow-md px-4 py-2 rounded-lg text-sm font-medium text-black max-w-xs">
+  30min avg delivery
+  <br />
+  <span className="text-gray-500 text-xs">Across 2k+ restaurants</span>
+</div>
+
+
       </div>
     </div>
   );
