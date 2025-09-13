@@ -61,28 +61,45 @@ export default function OrdersPage() {
     fetchOrders();
   }, []);
 
-  if (loading) return <p className="p-6">Loading orders...</p>;
+  if (loading) return <p className="p-6 text-gray-700">Loading orders...</p>;
 
-  if (orders.length === 0) return <p className="p-6">No orders found.</p>;
+  if (orders.length === 0)
+    return <p className="p-6 text-gray-700">No orders found.</p>;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">📦 All Orders</h1>
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 text-center sm:text-left">
+        📦 All Orders
+      </h1>
       {orders.map((order) => (
-        <div key={order._id} className="mb-6 p-4 bg-white rounded-lg shadow-md">
-          <h2 className="font-semibold text-lg mb-2">User: {order.user}</h2>
-          <p className="text-sm mb-2">Payment Type: {order.paymentType}</p>
+        <div
+          key={order._id}
+          className="mb-6 p-4 sm:p-6 bg-white rounded-2xl shadow-md w-full"
+        >
+          <h2 className="font-semibold text-lg text-gray-800 mb-2">
+            User: {order.user}
+          </h2>
+          <p className="text-sm text-gray-700 mb-1">
+            Payment Type: {order.paymentType}
+          </p>
           {order.razorpayPaymentId && (
-            <p className="text-sm mb-2">Payment ID: {order.razorpayPaymentId}</p>
+            <p className="text-sm text-gray-700 mb-1">
+              Payment ID: {order.razorpayPaymentId}
+            </p>
           )}
-          <p className="text-sm mb-2">Delivery Address: {order.deliveryAddress}</p>
-          <p className="font-bold mb-2">Total: ₹{order.totalAmount}</p>
+          <p className="text-sm text-gray-700 mb-1">
+            Delivery Address: {order.deliveryAddress}
+          </p>
+          <p className="font-bold text-gray-800 mb-2">
+            Total: ₹{order.totalAmount}
+          </p>
           <div>
-            <h3 className="font-semibold mb-1">Items:</h3>
-            <ul className="list-disc pl-5">
+            <h3 className="font-semibold mb-1 text-gray-800">Items:</h3>
+            <ul className="list-disc pl-5 text-gray-700">
               {order.items.map((item) => (
                 <li key={item._id}>
-                  {item.name} ({item.type}) x {item.quantity} = ₹{item.price * item.quantity}
+                  {item.name} ({item.type}) x {item.quantity} = ₹
+                  {item.price * item.quantity}
                 </li>
               ))}
             </ul>

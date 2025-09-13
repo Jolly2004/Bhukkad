@@ -28,7 +28,6 @@ export default function AddFoodPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Authentication Guard
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (!user) {
@@ -49,7 +48,6 @@ export default function AddFoodPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle image upload + resize + compress
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -65,7 +63,6 @@ export default function AddFoodPage() {
           let width = img.width;
           let height = img.height;
 
-          // Maintain aspect ratio
           if (width > height) {
             if (width > maxWidth) {
               height *= maxWidth / width;
@@ -108,7 +105,6 @@ export default function AddFoodPage() {
       const data = await res.json();
       setMessage(data.message || "✅ Food added successfully");
 
-      // Reset form
       setFormData({ name: "", description: "", price: "", type: "veg", photo: null });
       setFilePreview(null);
     } catch {
@@ -119,30 +115,32 @@ export default function AddFoodPage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen pb-10">
       <AdminNavbar />
 
-      <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
-        <h2 className="text-2xl font-bold text-[#F25C23] mb-6">➕ Add New Food Item</h2>
+      <div className="max-w-xl mx-auto mt-6 p-4 sm:p-6 bg-white rounded-2xl shadow-lg">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#F25C23] mb-6 text-center sm:text-left">
+          ➕ Add New Food Item
+        </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           {/* Item Name */}
           <div>
-            <label className="font-semibold mb-1 block">Item Name</label>
+            <label className="font-semibold mb-1 block text-gray-700">Item Name</label>
             <input
               type="text"
               name="name"
               placeholder="e.g. Margherita Pizza"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none text-gray-800"
               required
             />
           </div>
 
           {/* Food Image */}
           <div>
-            <label className="font-semibold mb-1 block">Food Image</label>
+            <label className="font-semibold mb-1 block text-gray-700">Food Image</label>
             <input
               type="file"
               accept="image/*"
@@ -156,7 +154,7 @@ export default function AddFoodPage() {
                   alt="Preview"
                   width={320}
                   height={240}
-                  className="object-cover rounded-lg shadow-md"
+                  className="object-cover rounded-lg shadow-md w-full h-auto"
                   unoptimized
                 />
               </div>
@@ -165,35 +163,35 @@ export default function AddFoodPage() {
 
           {/* Description */}
           <div>
-            <label className="font-semibold mb-1 block">Description</label>
+            <label className="font-semibold mb-1 block text-gray-700">Description</label>
             <textarea
               name="description"
               placeholder="Short description"
               value={formData.description}
               onChange={handleChange}
               rows={4}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none text-gray-800"
               required
             />
           </div>
 
           {/* Price */}
           <div>
-            <label className="font-semibold mb-1 block">Price (₹)</label>
+            <label className="font-semibold mb-1 block text-gray-700">Price (₹)</label>
             <input
               type="number"
               name="price"
               placeholder="100"
               value={formData.price}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-[#F25C23] outline-none text-gray-800"
               required
             />
           </div>
 
           {/* Type */}
           <div>
-            <label className="font-semibold mb-1 block">Type</label>
+            <label className="font-semibold mb-1 block text-gray-700">Type</label>
             <div className="flex gap-6">
               <label className="flex items-center gap-2">
                 <input
@@ -222,13 +220,15 @@ export default function AddFoodPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#F25C23] text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition"
+            className="w-full bg-[#F25C23] text-white py-3 rounded-lg font-bold hover:bg-orange-600 transition text-lg"
           >
             {loading ? "Adding..." : "Add Food Item"}
           </button>
         </form>
 
-        {message && <p className="mt-4 text-center text-sm">{message}</p>}
+        {message && (
+          <p className="mt-4 text-center text-sm text-gray-700 sm:text-base">{message}</p>
+        )}
       </div>
     </div>
   );
