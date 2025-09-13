@@ -47,7 +47,7 @@ function HeaderBar() {
       color: "#000000ff", // explicitly set the color
     }}
   >
-    BiteDash
+    Bhukkad
   </span>
 </Link>
 
