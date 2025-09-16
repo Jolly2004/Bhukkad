@@ -49,6 +49,38 @@ export default function CartPage() {
     fetchCart();
   };
 
+  // Razorpay payment handler
+  const handlePayment = () => {
+    const options: any = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY, // Razorpay Key
+      amount: (total + 30) * 100, // total + delivery fee in paise
+      currency: "INR",
+      name: "Your App Name",
+      description: "Order Payment",
+      image: "/logo.png", // optional
+      handler: function (response: any) {
+        alert(`Payment successful. Razorpay Payment ID: ${response.razorpay_payment_id}`);
+        // Optionally clear cart after payment
+        db.cart.clear();
+        fetchCart();
+      },
+      prefill: {
+        name: "Customer Name",
+        email: "customer@example.com",
+        contact: "9999999999",
+      },
+      notes: {
+        address: deliveryAddress,
+      },
+      theme: {
+        color: "#F25C23",
+      },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+  };
+
   useEffect(() => {
     fetchCart();
     // load address from localStorage (set at signup/login)
@@ -157,7 +189,10 @@ export default function CartPage() {
         </div>
 
         {/* Pay Now */}
-        <button className="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
+        <button
+          onClick={handlePayment}
+          className="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition"
+        >
           Pay Now
         </button>
       </div>
