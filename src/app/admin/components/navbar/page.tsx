@@ -19,6 +19,12 @@ export default function AdminNavbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
             <Link
+              href="/"
+              className="hover:bg-orange-600 px-3 py-2 rounded-lg font-semibold"
+            >
+              Home
+            </Link>
+            <Link
               href="/admin/add"
               className="hover:bg-orange-600 px-3 py-2 rounded-lg font-semibold"
             >
@@ -50,6 +56,13 @@ export default function AdminNavbar() {
       {/* Mobile Menu */}
       {open && (
         <div className="md:hidden px-4 pb-4 space-y-2">
+          <Link
+            href="/"
+            className="block bg-orange-500 px-3 py-2 rounded-lg font-semibold"
+            onClick={() => setOpen(false)}
+          >
+            Home
+          </Link>
           <Link
             href="/admin/add"
             className="block bg-orange-500 px-3 py-2 rounded-lg font-semibold"
