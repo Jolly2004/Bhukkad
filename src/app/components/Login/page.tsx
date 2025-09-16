@@ -3,10 +3,12 @@
 import { useState, FormEvent } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react"; // 👁️ icons
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // 👁️ toggle state
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const router = useRouter();
@@ -24,7 +26,7 @@ export default function LoginForm() {
     // ✅ Admin check
     if (email === "admin" && password === "admin") {
       localStorage.setItem("user", JSON.stringify({ username: "admin" }));
-      router.push("/admin/add"); // redirect to admin page
+      router.push("/admin/add");
       return;
     }
 
@@ -37,10 +39,7 @@ export default function LoginForm() {
         setEmail("");
         setPassword("");
 
-        // Save user info to localStorage
         localStorage.setItem("user", JSON.stringify(response.data.user));
-
-        // Redirect to homepage
         router.push("/");
       } else {
         setError(response.data.message);
@@ -51,59 +50,80 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
-      <div className="w-full max-w-sm p-6 sm:p-8 bg-gray-800 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-red-500 mb-6">
-          Log In
+    <div className="flex items-center justify-center min-h-screen bg-[#f8f8f8] px-4">
+      <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
+        {/* Branding */}
+        <h2 className="text-3xl font-extrabold text-center text-red-600 mb-2">
+          Bhukkad
         </h2>
+        <p className="text-center text-gray-500 mb-6">Welcome back! Log in</p>
 
-        {error && <p className="text-red-400 mb-4 text-center">{error}</p>}
-        {success && <p className="text-green-400 mb-4 text-center">{success}</p>}
+        {/* Alerts */}
+        {error && (
+          <p className="text-red-500 bg-red-100 p-2 rounded-md text-center mb-4">
+            {error}
+          </p>
+        )}
+        {success && (
+          <p className="text-green-500 bg-green-100 p-2 rounded-md text-center mb-4">
+            {success}
+          </p>
+        )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-gray-300">Email</label>
             <input
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Enter your email"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              placeholder="Email Address"
             />
           </div>
 
-          <div>
-            <label className="block text-gray-300">Password</label>
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Enter your password"
+              className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              placeholder="Password"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
+            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition shadow-md"
           >
             Log In
           </button>
 
           <button
             type="button"
-            className="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition mt-2"
+            className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
             onClick={() => router.push("/")}
           >
             Back to Homepage
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-400 mt-4">
-          Don't have an account?{" "}
-          <a href="/pages/signup" className="text-red-400 hover:underline">
+        {/* Footer */}
+        <p className="text-sm text-center text-gray-500 mt-6">
+          Don&apos;t have an account?{" "}
+          <a
+            href="/pages/signup"
+            className="text-red-600 font-semibold hover:underline"
+          >
             Sign Up
           </a>
         </p>

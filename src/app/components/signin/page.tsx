@@ -2,12 +2,14 @@
 
 import { useState, FormEvent } from "react";
 import axios from "axios";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export default function SignUpForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -51,86 +53,110 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
-      <div className="w-full max-w-sm p-6 sm:p-8 bg-gray-800 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-red-500 mb-6">
-          Sign Up
+    <div className="flex items-center justify-center min-h-screen bg-[#f8f8f8] px-4">
+      <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
+        {/* Branding / Title */}
+        <h2 className="text-3xl font-extrabold text-center text-red-600 mb-2">
+          Bhukkad
         </h2>
+        <p className="text-center text-gray-500 mb-6">Create your account</p>
 
-        {error && <p className="text-red-400 mb-4 text-center">{error}</p>}
-        {success && <p className="text-green-400 mb-4 text-center">{success}</p>}
+        {/* Alerts */}
+        {error && (
+          <p className="text-red-500 bg-red-100 p-2 rounded-md text-center mb-4">
+            {error}
+          </p>
+        )}
+        {success && (
+          <p className="text-green-500 bg-green-100 p-2 rounded-md text-center mb-4">
+            {success}
+          </p>
+        )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-gray-300">Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Enter your name"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              placeholder="Full Name"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Enter your email"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              placeholder="Email Address"
             />
           </div>
 
           <div>
-            <label className="block text-gray-300">Address</label>
             <input
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Enter your address"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              placeholder="Delivery Address"
             />
           </div>
 
-          <div>
-            <label className="block text-gray-300">Password</label>
+          {/* Password with toggle */}
+          <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 mt-2 border rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Enter your password"
+              className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              placeholder="Password"
             />
-            <p className="text-xs text-gray-400 mt-1">
-              Must be 8+ chars, include uppercase, lowercase, number & special char
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? (
+                <EyeSlashIcon className="h-5 w-5" />
+              ) : (
+                <EyeIcon className="h-5 w-5" />
+              )}
+            </button>
+            <p className="text-xs text-gray-500 mt-1">
+              Must be 8+ chars with uppercase, lowercase, number & special char
             </p>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
+            className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition shadow-md"
           >
-            Sign Up
+            Create Account
           </button>
 
           <button
             type="button"
             onClick={() => (window.location.href = "/")}
-            className="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition"
+            className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
           >
             Back to Homepage
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-400 mt-4">
+        {/* Footer */}
+        <p className="text-sm text-center text-gray-500 mt-6">
           Already have an account?{" "}
-          <a href="/pages/login" className="text-red-400 hover:underline">
+          <a
+            href="/pages/login"
+            className="text-red-600 font-semibold hover:underline"
+          >
             Sign In
           </a>
         </p>
