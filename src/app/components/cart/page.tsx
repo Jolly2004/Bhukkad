@@ -50,36 +50,81 @@ export default function CartPage() {
   };
 
   // Razorpay payment handler
-  const handlePayment = () => {
-    const options: any = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY, // Razorpay Key
-      amount: (total + 30) * 100, // total + delivery fee in paise
-      currency: "INR",
-      name: "Your App Name",
-      description: "Order Payment",
-      image: "/logo.png", // optional
-      handler: function (response: any) {
-        alert(`Payment successful. Razorpay Payment ID: ${response.razorpay_payment_id}`);
-        // Optionally clear cart after payment
-        db.cart.clear();
-        fetchCart();
-      },
-      prefill: {
-        name: "Customer Name",
-        email: "customer@example.com",
-        contact: "9999999999",
-      },
-      notes: {
-        address: deliveryAddress,
-      },
-      theme: {
-        color: "#F25C23",
-      },
-    };
+ const handlePayment = () => {
+  // 1️⃣ Validate delivery address
+  if (!deliveryAddress || deliveryAddress.trim() === "") {
+    alert("⚠️ Please enter your delivery address before proceeding.");
+    return;
+  }
 
-    const rzp = new (window as any).Razorpay(options);
-    rzp.open();
+  // 2️⃣ Get logged-in user info from localStorage
+  const userData = localStorage.getItem("user");
+  if (!userData) {
+    alert("⚠️ You must be logged in to place an order.");
+    return;
+  }
+  const parsedUser = JSON.parse(userData);
+  const userId = parsedUser.id || parsedUser._id || ""; // adjust according to your user object
+
+  // 3️⃣ Razorpay options
+  const options: any = {
+    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
+    amount: (total + 30) * 100, // total + delivery fee in paise
+    currency: "INR",
+    name: "Your App Name",
+    description: "Order Payment",
+    handler: async function (response: any) {
+      try {
+        const orderData = {
+          user: userId,
+          items: cartItems,
+          deliveryAddress,
+          paymentType: "Razorpay",
+          totalAmount: total + 30,
+          razorpayPaymentId: response.razorpay_payment_id,
+        };
+
+        const res = await fetch("/api/order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(orderData),
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          alert("✅ Payment successful and order saved!");
+          db.cart.clear();
+          fetchCart();
+        } else {
+          alert("⚠️ Payment succeeded but saving order failed.");
+          console.error(result.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("⚠️ Error saving order to database.");
+      }
+    },
+    prefill: {
+      name: parsedUser.name || "Customer",
+      email: parsedUser.email || "customer@example.com",
+      contact: parsedUser.phone || "9999999999",
+    },
+    notes: {
+      address: deliveryAddress,
+    },
+    theme: {
+      color: "#F25C23",
+    },
   };
+
+  // 4️⃣ Open Razorpay
+  const rzp = new (window as any).Razorpay(options);
+  rzp.open();
+};
+
+
 
   useEffect(() => {
     fetchCart();
@@ -160,15 +205,17 @@ export default function CartPage() {
           <label className="block font-semibold mb-2">
             Delivery Address (update if needed)
           </label>
-          <textarea
-            value={deliveryAddress}
-            onChange={(e) => {
-              setDeliveryAddress(e.target.value);
-              localStorage.setItem("deliveryAddress", e.target.value);
-            }}
-            className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
-            rows={2}
-          />
+<textarea
+  value={deliveryAddress}
+  onChange={(e) => {
+    setDeliveryAddress(e.target.value);
+    localStorage.setItem("deliveryAddress", e.target.value);
+  }}
+  className="w-full p-3 rounded-lg border border-gray-300 text-black bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+  rows={2}
+  required
+/>
+
         </div>
 
         {/* Bill Details */}

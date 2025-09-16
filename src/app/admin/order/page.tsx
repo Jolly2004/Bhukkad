@@ -145,7 +145,8 @@ export default function OrdersPage() {
                       <div className="flex-1">
                         <p className="font-medium">{item.name}</p>
                         <p className="text-xs text-gray-500">
-                          {item.type.toUpperCase()} | ₹{item.price} ×{" "}
+                          {(item.type || "").toUpperCase()}
+
                           {item.quantity}
                         </p>
                       </div>
